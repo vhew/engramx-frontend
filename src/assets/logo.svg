@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 400 400">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke-width: 2px;
+      }
+
+      .st0, .st1, .st2, .st3, .st4 {
+        stroke: #e8a317;
+      }
+
+      .st0, .st5, .st2 {
+        fill: #080c12;
+      }
+
+      .st1 {
+        stroke-width: 1.5px;
+      }
+
+      .st1, .st3, .st4, .st6 {
+        fill: none;
+      }
+
+      .st7 {
+        font-family: CourierNewPSMT, 'Courier New';
+        font-size: 8px;
+        opacity: .25;
+      }
+
+      .st7, .st8 {
+        isolation: isolate;
+      }
+
+      .st7, .st8, .st9 {
+        fill: #e8a317;
+      }
+
+      .st2 {
+        stroke-width: 3px;
+      }
+
+      .st3 {
+        stroke-width: 6px;
+      }
+
+      .st4 {
+        stroke-width: 8px;
+      }
+
+      .st6 {
+        stroke: #1e2a3a;
+        stroke-dasharray: 2 4;
+        stroke-width: .5px;
+      }
+
+      .st10 {
+        opacity: .2;
+      }
+
+      .st8 {
+        font-family: CourierNewPS-BoldMT, 'Courier New';
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: .36em;
+        opacity: .5;
+      }
+    </style>
+  </defs>
+  <rect class="st5" width="400" height="400" rx="32" ry="32"/>
+  <rect class="st6" x="24" y="24" width="352" height="352" rx="12" ry="12"/>
+  <line class="st4" x1="111" y1="70" x2="179" y2="70"/>
+  <line class="st4" x1="111" y1="180" x2="240" y2="180"/>
+  <line class="st4" x1="111" y1="290" x2="179" y2="290"/>
+  <line class="st3" x1="179" y1="70" x2="289" y2="290"/>
+  <line class="st3" x1="179" y1="290" x2="289" y2="70"/>
+  <g class="st10">
+    <line class="st1" x1="111" y1="70" x2="234" y2="180"/>
+    <line class="st1" x1="111" y1="290" x2="234" y2="180"/>
+    <line class="st1" x1="111" y1="180" x2="180.5" y2="67"/>
+    <line class="st1" x1="111" y1="180" x2="289" y2="290"/>
+    <line class="st1" x1="174.29" y1="73.3" x2="111" y2="290"/>
+  </g>
+  <g>
+    <circle class="st2" cx="111" cy="70" r="12"/>
+    <circle class="st9" cx="111" cy="70" r="4"/>
+    <circle class="st2" cx="111" cy="180" r="12"/>
+    <circle class="st9" cx="111" cy="180" r="4"/>
+    <circle class="st2" cx="111" cy="290" r="12"/>
+    <circle class="st9" cx="111" cy="290" r="4"/>
+  </g>
+  <g>
+    <circle class="st2" cx="179" cy="70" r="14"/>
+    <circle class="st9" cx="179" cy="70" r="5"/>
+    <circle class="st2" cx="179" cy="290" r="14"/>
+    <circle class="st9" cx="179" cy="290" r="5"/>
+  </g>
+  <g>
+    <circle class="st2" cx="289" cy="70" r="12"/>
+    <circle class="st9" cx="289" cy="70" r="4"/>
+    <circle class="st2" cx="289" cy="290" r="12"/>
+    <circle class="st9" cx="289" cy="290" r="4"/>
+  </g>
+  <circle class="st2" cx="234" cy="180" r="18"/>
+  <circle class="st0" cx="234" cy="180" r="10"/>
+  <circle class="st9" cx="234" cy="180" r="4"/>
+  <text class="st8" text-anchor="middle" transform="translate(200 340)"><tspan x="0" y="0">ENGRAMX</tspan></text>
+  <text class="st7" transform="translate(40 360)"><tspan x="0" y="0">REV A PCB-001</tspan></text>
+</svg>

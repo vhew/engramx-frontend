@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  --color-engram-50: #fef9ec;
+  --color-engram-100: #fcefc5;
+  --color-engram-200: #f9dd86;
+  --color-engram-300: #fcd37f;
+  --color-engram-400: #f5b731;
+  --color-engram-500: #e8a317;
+  --color-engram-600: #c48710;
+  --color-engram-700: #9a6a0c;
+  --color-engram-800: #7a5410;
+  --color-engram-900: #1a1408;
+  --color-engram-950: #0d0a04;
+  --color-copper-400: #d4845a;
+  --color-copper-500: #c07040;
+  --color-copper-900: #1a0f08;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply text-gray-100;
+    background-color: #0a0e14;
+    color: #f0e8db;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+@utility card {
+  @apply bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6 shadow-lg shadow-black/20;
+}
+
+@utility card-link {
+  @apply card transition-all duration-150 hover:border-engram-700 hover:shadow-xl hover:shadow-black/30;
+}
+
+@utility badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-semibold tracking-wide uppercase;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+}
+
+@utility badge-active {
+  @apply badge border;
+  background: rgba(122, 184, 122, 0.08);
+  color: #7ab87a;
+  border-color: rgba(122, 184, 122, 0.2);
+}
+
+@utility badge-revoked {
+  @apply badge border;
+  background: rgba(232, 112, 112, 0.08);
+  color: #e87070;
+  border-color: rgba(232, 112, 112, 0.2);
+}
+
+@utility badge-owner {
+  @apply badge border;
+  background: rgba(122, 168, 212, 0.08);
+  color: #7aa8d4;
+  border-color: rgba(122, 168, 212, 0.2);
+}
+
+@utility badge-operator {
+  @apply badge border;
+  background: rgba(176, 136, 200, 0.08);
+  color: #b088c8;
+  border-color: rgba(176, 136, 200, 0.2);
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-engram-600 hover:bg-engram-500 font-semibold py-2.5 px-4 rounded-md transition-colors duration-150
+      focus:ring-2 focus:ring-offset-2 focus:ring-engram-500 focus:outline-hidden;
+    color: #0a0e14;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    --tw-ring-offset-color: #0a0e14;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium py-2.5 px-4 rounded-md border border-gray-700 transition-colors duration-150
+      focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:outline-hidden;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    --tw-ring-offset-color: #0a0e14;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 font-medium py-2.5 px-4 rounded-md transition-colors duration-150
+      focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:outline-hidden;
+    color: #f0e8db;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    --tw-ring-offset-color: #0a0e14;
+  }
+
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-danger:disabled {
+    @apply opacity-35 cursor-not-allowed hover:bg-inherit;
+  }
+  .btn-primary:disabled {
+    @apply hover:bg-engram-600;
+  }
+  .btn-danger:disabled {
+    @apply hover:bg-red-600;
+  }
+  .btn-secondary:disabled {
+    @apply hover:bg-gray-800;
+  }
+
+  .input {
+    @apply bg-gray-800 border border-gray-700 rounded-md px-3 py-2.5 placeholder-gray-500 focus:outline-hidden focus:border-engram-600 focus:ring-2 focus:ring-engram-500/10 w-full;
+    color: #f0e8db;
+  }
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* Mobile menu animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 150ms ease-out;
+}
