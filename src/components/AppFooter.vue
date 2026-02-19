@@ -2,7 +2,7 @@
   <footer class="border-t border-gray-800 py-8 mt-auto">
     <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-2">
-        <p class="text-gray-500 text-sm">EngramX &mdash; Apache 2.0 &amp; MIT</p>
+        <p class="text-gray-500 text-sm">EngramX &mdash; <router-link to="/licensing" class="text-gray-400 hover:text-white transition-colors">Licensing</router-link></p>
       </div>
       <div class="flex items-center gap-4">
         <router-link to="/verify" class="text-gray-400 hover:text-white text-sm transition-colors">Verify</router-link>

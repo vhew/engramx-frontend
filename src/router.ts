@@ -12,6 +12,7 @@ const routes = [
   { path: '/guardian', component: () => import('./pages/Guardian.vue'), meta: { requiresAuth: true } },
   { path: '/verify', component: () => import('./pages/Verify.vue') },
   { path: '/docs', component: () => import('./pages/Docs.vue') },
+  { path: '/licensing', component: () => import('./pages/Licensing.vue') },
 
   // Redirects from old paths
   { path: '/wallet', redirect: '/billing?tab=transfers' },
