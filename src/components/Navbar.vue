@@ -89,6 +89,8 @@ watch(
           <!-- Mobile hamburger -->
           <button
             class="md:hidden p-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            :aria-expanded="mobileMenuOpen"
+            :aria-label="mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'"
             @click="mobileMenuOpen = !mobileMenuOpen"
           >
             <EngramIcon :name="mobileMenuOpen ? 'x' : 'menu'" :size="20" />

@@ -26,6 +26,14 @@ router.beforeEach(async (to) => {
   }
 });
 
+app.config.errorHandler = (err, _instance, info) => {
+  console.error(`[Vue error] ${info}:`, err);
+};
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[Unhandled promise rejection]:', event.reason);
+});
+
 app.use(router);
 app.mount('#root');
 
