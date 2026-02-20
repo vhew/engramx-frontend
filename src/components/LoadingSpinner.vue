@@ -14,7 +14,10 @@ const sizeClasses = {
 <template>
   <div class="flex items-center gap-2" :class="size === 'sm' ? '' : 'justify-center py-8'">
     <div
-      :class="[sizeClasses[size || 'md'], 'rounded-full border-gray-700 border-t-engram-500 animate-spin']"
+      :class="[
+        sizeClasses[size || 'md'],
+        'rounded-full border-gray-700 border-t-engram-500 animate-spin',
+      ]"
     />
     <span v-if="label" class="text-sm text-gray-400">{{ label }}</span>
   </div>

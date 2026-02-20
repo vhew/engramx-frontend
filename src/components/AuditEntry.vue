@@ -21,9 +21,7 @@ defineProps<{
         {{ callerRole }}
       </span>
     </td>
-    <td class="px-4 py-3 text-sm font-mono text-gray-400">
-      {{ caller.slice(0, 10) }}...
-    </td>
+    <td class="px-4 py-3 text-sm font-mono text-gray-400">{{ caller.slice(0, 10) }}...</td>
     <td class="px-4 py-3 text-sm font-medium text-gray-200">{{ operation }}</td>
     <td class="px-4 py-3 text-sm text-gray-400 max-w-xs truncate">{{ details }}</td>
     <td class="px-4 py-3 text-sm">

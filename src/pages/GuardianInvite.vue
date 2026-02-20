@@ -30,7 +30,7 @@ async function acceptInvite() {
   try {
     const agent = createAgent(auth.identity.value);
     const actor = createEngramActor(agent, engramCanisterId.value);
-    const result = await actor.acceptGuardianInvite(inviteCode.value) as Record<string, any>;
+    const result = (await actor.acceptGuardianInvite!(inviteCode.value)) as Record<string, any>;
     if ('Ok' in result) {
       guardianSession.addGuardianEngram(engramCanisterId.value);
       accepted.value = true;
@@ -51,19 +51,24 @@ function startPolling() {
     try {
       const agent = createAgent(auth.identity.value!);
       const actor = createEngramActor(agent, engramCanisterId.value);
-      const result = await actor.checkGuardianStatus() as Record<string, any>;
+      const result = (await actor.checkGuardianStatus!()) as Record<string, any>;
       if ('Ok' in result && 'Active' in result.Ok.status) {
         approved.value = true;
         stopPolling();
         await refreshGuardianStatus();
         router.push('/guardian');
       }
-    } catch { /* ignore polling errors */ }
+    } catch {
+      /* ignore polling errors */
+    }
   }, 5000);
 }
 
 function stopPolling() {
-  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
 }
 
 onUnmounted(stopPolling);
@@ -83,7 +88,9 @@ onUnmounted(stopPolling);
         <h1 class="text-2xl font-bold text-white mb-3">Guardian Invite</h1>
         <p class="text-gray-400 mb-2">You've been invited as a guardian for engram:</p>
         <p class="text-engram-400 font-mono text-sm mb-6 break-all">{{ engramCanisterId }}</p>
-        <p class="text-gray-400 mb-6">Please log in with Internet Identity to accept this invitation.</p>
+        <p class="text-gray-400 mb-6">
+          Please log in with Internet Identity to accept this invitation.
+        </p>
         <button class="btn-primary" :disabled="auth.isLoading.value" @click="auth.login">
           {{ auth.isLoading.value ? 'Logging in...' : 'Log in to Accept' }}
         </button>
@@ -106,8 +113,18 @@ onUnmounted(stopPolling);
       <div v-else-if="approved">
         <div class="flex justify-center mb-4">
           <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
-            <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <svg
+              class="w-8 h-8 text-green-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
         </div>
@@ -120,9 +137,17 @@ onUnmounted(stopPolling);
         <h1 class="text-2xl font-bold text-white mb-3">Guardian Invite</h1>
         <p class="text-gray-400 mb-2">You've been invited as a guardian for engram:</p>
         <p class="text-engram-400 font-mono text-sm mb-6 break-all">{{ engramCanisterId }}</p>
-        <p class="text-gray-500 text-sm mb-6">As a guardian, you'll be able to perform emergency operations like freezing payments, pausing writes, and revoking operators.</p>
+        <p class="text-gray-500 text-sm mb-6">
+          As a guardian, you'll be able to perform emergency operations like freezing payments,
+          pausing writes, and revoking operators.
+        </p>
 
-        <div v-if="error" class="bg-red-900/20 border border-red-800 rounded-lg p-3 text-red-400 text-sm mb-4">{{ error }}</div>
+        <div
+          v-if="error"
+          class="bg-red-900/20 border border-red-800 rounded-lg p-3 text-red-400 text-sm mb-4"
+        >
+          {{ error }}
+        </div>
 
         <button class="btn-primary" :disabled="accepting" @click="acceptInvite">
           {{ accepting ? 'Accepting...' : 'Accept Invite' }}

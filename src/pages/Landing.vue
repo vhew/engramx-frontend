@@ -45,7 +45,7 @@ function formatTrilliCycles(raw: bigint): string {
 onMounted(async () => {
   try {
     const actor = createAnonymousRegistryActor();
-    const m = await actor.publicMetrics() as any;
+    const m = (await actor.publicMetrics!()) as any;
     publicMetrics.value = {
       totalEngrams: Number(m.totalEngrams),
       activeEngrams: Number(m.activeEngrams),
@@ -61,9 +61,13 @@ const router = useRouter();
 const { isAuthenticated, isLoading, principal, login, logout } = useAuth();
 
 const isGuardianOnly = inject<Ref<boolean>>('isGuardianOnly', ref(false));
-watch(isGuardianOnly, (v) => {
-  if (v) router.push('/guardian');
-}, { immediate: true });
+watch(
+  isGuardianOnly,
+  (v) => {
+    if (v) router.push('/guardian');
+  },
+  { immediate: true },
+);
 
 const engram = inject<Ref<any>>('engram', ref(null));
 const engramActor = inject<Ref<any>>('engramActor', ref(null));
@@ -84,33 +88,40 @@ async function handleCreateEngram() {
   }
 }
 
-const engramCanisterId = computed(() => engram.value?.canisterId?.toText?.() || engram.value?.canisterId?.toString() || '');
+const engramCanisterId = computed(
+  () => engram.value?.canisterId?.toText?.() || engram.value?.canisterId?.toString() || '',
+);
 const invite = useOperatorInvite(engramActor, engramCanisterId);
-const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode.value} --engram ${engramCanisterId.value}`);
+const pairCommand = computed(
+  () => `npx @engramx/client pair ${invite.inviteCode.value} --engram ${engramCanisterId.value}`,
+);
 </script>
 
 <template>
   <div class="min-h-screen">
     <!-- Hero -->
     <section class="max-w-5xl mx-auto px-4 pt-16 pb-16 text-center">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight font-mono">
+      <h1
+        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight font-mono"
+      >
         Your AI Agent's
         <br />
         <span class="text-engram-400">Indestructible State</span>
       </h1>
       <p class="mt-6 text-base md:text-lg lg:text-xl text-gray-400 max-w-2xl mx-auto">
-        EngramX gives AI agents persistent memory, identity, and a wallet
-        on the Internet Computer. If the host machine dies, gets hacked, or
-        simply moves &mdash; the agent lives on.
+        EngramX gives AI agents persistent memory, identity, and a wallet on the Internet Computer.
+        If the host machine dies, gets hacked, or simply moves &mdash; the agent lives on.
       </p>
       <p class="mt-3 text-gray-500 max-w-xl mx-auto">
-        Built for <a href="https://github.com/nicholasgriffintn/openclaw" class="text-engram-400 hover:text-engram-300">OpenClaw</a>.
-        Ready for any agent framework.
+        Built for
+        <a
+          href="https://github.com/nicholasgriffintn/openclaw"
+          class="text-engram-400 hover:text-engram-300"
+          >OpenClaw</a
+        >. Ready for any agent framework.
       </p>
       <div class="mt-8 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4 sm:px-0">
-        <a href="#get-started" class="btn-primary text-lg px-6 py-3 text-center">
-          Get Started
-        </a>
+        <a href="#get-started" class="btn-primary text-lg px-6 py-3 text-center"> Get Started </a>
         <router-link to="/verify" class="btn-secondary text-lg px-6 py-3 text-center">
           Verify Our Code
         </router-link>
@@ -121,19 +132,27 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
     <section v-if="publicMetrics" class="max-w-5xl mx-auto px-4 pb-8">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <div class="rounded-lg border border-white/6 bg-white/3 p-4 text-center">
-          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">{{ publicMetrics.totalEngrams }}</p>
+          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">
+            {{ publicMetrics.totalEngrams }}
+          </p>
           <p class="text-xs md:text-sm text-gray-400 mt-1">Engrams Deployed</p>
         </div>
         <div class="rounded-lg border border-white/6 bg-white/3 p-4 text-center">
-          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">{{ publicMetrics.activeEngrams }}</p>
+          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">
+            {{ publicMetrics.activeEngrams }}
+          </p>
           <p class="text-xs md:text-sm text-gray-400 mt-1">Active</p>
         </div>
         <div class="rounded-lg border border-white/6 bg-white/3 p-4 text-center">
-          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">{{ formatUptime(publicMetrics.registrySince) }}</p>
+          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">
+            {{ formatUptime(publicMetrics.registrySince) }}
+          </p>
           <p class="text-xs md:text-sm text-gray-400 mt-1">Uptime</p>
         </div>
         <div class="rounded-lg border border-white/6 bg-white/3 p-4 text-center">
-          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">{{ formatTrilliCycles(publicMetrics.totalCyclesAllocated) }}</p>
+          <p class="text-2xl md:text-3xl font-bold text-amber-400 font-mono">
+            {{ formatTrilliCycles(publicMetrics.totalCyclesAllocated) }}
+          </p>
           <p class="text-xs md:text-sm text-gray-400 mt-1">Cycles Consumed</p>
         </div>
       </div>
@@ -148,8 +167,8 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
           <div class="feature-card-content">
             <h3 class="text-lg font-semibold text-white mb-2 font-mono">Persistent</h3>
             <p class="text-gray-300 text-sm">
-              Survives host machine failure. Survives canister upgrades.
-              Your agent's memory is stored on the Internet Computer.
+              Survives host machine failure. Survives canister upgrades. Your agent's memory is
+              stored on the Internet Computer.
             </p>
           </div>
         </div>
@@ -159,8 +178,8 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
           <div class="feature-card-content">
             <h3 class="text-lg font-semibold text-white mb-2 font-mono">Recoverable</h3>
             <p class="text-gray-300 text-sm">
-              Host compromised? Revoke its access from your phone,
-              register a new machine, and resume with full state intact.
+              Host compromised? Revoke its access from your phone, register a new machine, and
+              resume with full state intact.
             </p>
           </div>
         </div>
@@ -170,8 +189,8 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
           <div class="feature-card-content">
             <h3 class="text-lg font-semibold text-white mb-2 font-mono">Sovereign</h3>
             <p class="text-gray-300 text-sm">
-              You own your canister. No one &mdash; not even the service
-              operators &mdash; can read or modify your agent's data.
+              You own your canister. No one &mdash; not even the service operators &mdash; can read
+              or modify your agent's data.
             </p>
           </div>
         </div>
@@ -192,7 +211,9 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
           <h3 class="text-lg font-semibold text-white mb-2">1. Create an engram</h3>
           <!-- State: already have an engram -->
           <div v-if="isAuthenticated && engram" class="flex items-center gap-3 flex-wrap">
-            <span class="text-engram-400 font-mono text-sm">{{ engram.canisterId?.toText?.() || engram.canisterId?.toString() }}</span>
+            <span class="text-engram-400 font-mono text-sm">{{
+              engram.canisterId?.toText?.() || engram.canisterId?.toString()
+            }}</span>
             <span class="text-green-400 text-sm">&#10003; Engram created</span>
           </div>
           <!-- State: signed in, no engram yet -->
@@ -215,7 +236,9 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
           </div>
         </div>
         <div>
-          <h3 class="text-lg font-semibold text-white mb-2">2. Register your host as an operator</h3>
+          <h3 class="text-lg font-semibold text-white mb-2">
+            2. Register your host as an operator
+          </h3>
           <div v-if="isAuthenticated && engram" class="space-y-3">
             <InviteCodeDisplay
               v-if="invite.inviteCode.value"
@@ -227,14 +250,24 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
               @dismiss="invite.dismiss"
             />
             <div v-else>
-              <p class="text-gray-400 text-sm mb-2">Create an invite code, then run the pairing command on your agent host.</p>
-              <button class="btn-primary" :disabled="invite.creating.value" @click="invite.createInvite('operator')">
+              <p class="text-gray-400 text-sm mb-2">
+                Create an invite code, then run the pairing command on your agent host.
+              </p>
+              <button
+                class="btn-primary"
+                :disabled="invite.creating.value"
+                @click="invite.createInvite('operator')"
+              >
                 {{ invite.creating.value ? 'Creating...' : 'Create Invite' }}
               </button>
-              <p v-if="invite.inviteError.value" class="text-red-400 text-sm mt-2">{{ invite.inviteError.value }}</p>
+              <p v-if="invite.inviteError.value" class="text-red-400 text-sm mt-2">
+                {{ invite.inviteError.value }}
+              </p>
             </div>
           </div>
-          <p v-else class="text-gray-400 text-sm">Create your engram first, then generate an invite code.</p>
+          <p v-else class="text-gray-400 text-sm">
+            Create your engram first, then generate an invite code.
+          </p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-white mb-2">3. Install the client</h3>
@@ -242,18 +275,26 @@ const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode
         </div>
         <div>
           <h3 class="text-lg font-semibold text-white mb-2">4. Use the engram in your agent</h3>
-          <CodeBlock :code="`import { EngramClient } from '@engramx/client';\n\nconst engram = new EngramClient({\n  canisterId: '${engram ? (engram.canisterId?.toText?.() || engram.canisterId?.toString()) : 'xxxxx-xxxxx-xxxxx-xxxxx-xxx'}',\n  sessionKeyPath: '~/.engramx/session.key',\n});\n\nconst file = await engram.readMemory('MEMORY.md');\nawait engram.appendMemory('memory/daily.md', '## Notes\\nSomething happened.');`" />
+          <CodeBlock
+            :code="`import { EngramClient } from '@engramx/client';\n\nconst engram = new EngramClient({\n  canisterId: '${engram ? engram.canisterId?.toText?.() || engram.canisterId?.toString() : 'xxxxx-xxxxx-xxxxx-xxxxx-xxx'}',\n  sessionKeyPath: '~/.engramx/session.key',\n});\n\nconst file = await engram.readMemory('MEMORY.md');\nawait engram.appendMemory('memory/daily.md', '## Notes\\nSomething happened.');`"
+          />
           <p class="text-gray-500 text-sm mt-3">
-            Using OpenClaw? See the <router-link to="/docs" class="text-engram-400 hover:text-engram-300">integration guide</router-link> for the one-step config.
+            Using OpenClaw? See the
+            <router-link to="/docs" class="text-engram-400 hover:text-engram-300"
+              >integration guide</router-link
+            >
+            for the one-step config.
           </p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-white mb-2">5. Done</h3>
-          <p class="text-gray-400">Your agent's memory now syncs to the canister. If the host dies, spin up a new one and resume.</p>
+          <p class="text-gray-400">
+            Your agent's memory now syncs to the canister. If the host dies, spin up a new one and
+            resume.
+          </p>
         </div>
       </div>
     </section>
-
   </div>
 </template>
 

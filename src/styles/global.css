@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-engram-50: #fef9ec;
@@ -15,8 +15,8 @@
   --color-copper-400: #d4845a;
   --color-copper-500: #c07040;
   --color-copper-900: #1a0f08;
-  --font-mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
-  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Courier New', monospace;
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @layer base {
@@ -24,7 +24,11 @@
     @apply text-gray-100;
     background-color: #0a0e14;
     color: #f0e8db;
-    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family:
+      'IBM Plex Sans',
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
   }
 }
 
@@ -123,7 +127,9 @@
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 150ms ease, transform 150ms ease;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
 }
 .page-enter-from {
   opacity: 0;

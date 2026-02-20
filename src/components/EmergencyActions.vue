@@ -86,9 +86,10 @@ async function resumeWrites() {
 
 async function revokeOperator() {
   if (!selectedOperator.value) return;
-  const name = activeOperators.value.find(
-    (op: any) => op.principal.toText() === selectedOperator.value.toText(),
-  )?.name || 'this operator';
+  const name =
+    activeOperators.value.find(
+      (op: any) => op.principal.toText() === selectedOperator.value.toText(),
+    )?.name || 'this operator';
   if (!confirm(`Revoke ${name}? This cannot be undone.`)) return;
   loading.value = 'revoke';
   error.value = null;
@@ -112,18 +113,32 @@ async function revokeOperator() {
   <div class="space-y-4">
     <!-- Status indicators -->
     <div class="flex flex-wrap gap-2">
-      <span v-if="paymentsFrozen" class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-red-900/40 text-red-300 border border-red-700/50">
+      <span
+        v-if="paymentsFrozen"
+        class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-red-900/40 text-red-300 border border-red-700/50"
+      >
         Payments Frozen
       </span>
-      <span v-if="writesPaused" class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-900/40 text-yellow-300 border border-yellow-700/50">
+      <span
+        v-if="writesPaused"
+        class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-900/40 text-yellow-300 border border-yellow-700/50"
+      >
         Writes Paused
       </span>
-      <span v-if="!paymentsFrozen && !writesPaused" class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-green-900/40 text-green-300 border border-green-700/50">
+      <span
+        v-if="!paymentsFrozen && !writesPaused"
+        class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-green-900/40 text-green-300 border border-green-700/50"
+      >
         All Systems Normal
       </span>
     </div>
 
-    <div v-if="error" class="bg-red-900/20 border border-red-800 rounded-lg p-3 text-red-400 text-sm">{{ error }}</div>
+    <div
+      v-if="error"
+      class="bg-red-900/20 border border-red-800 rounded-lg p-3 text-red-400 text-sm"
+    >
+      {{ error }}
+    </div>
 
     <div class="flex flex-wrap gap-3">
       <!-- Freeze Payments -->
@@ -168,11 +183,11 @@ async function revokeOperator() {
     </div>
 
     <!-- Revoke Operator -->
-    <div v-if="permissions.canRevokeOperators && activeOperators.length > 0" class="flex items-center gap-3">
-      <select
-        v-model="selectedOperator"
-        class="input text-sm flex-1"
-      >
+    <div
+      v-if="permissions.canRevokeOperators && activeOperators.length > 0"
+      class="flex items-center gap-3"
+    >
+      <select v-model="selectedOperator" class="input text-sm flex-1">
         <option :value="null" disabled>Select operator to revoke...</option>
         <option v-for="op in activeOperators" :key="op.principal.toText()" :value="op.principal">
           {{ op.name }} ({{ op.principal.toText().slice(0, 10) }}...)

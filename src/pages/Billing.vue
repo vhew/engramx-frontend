@@ -43,7 +43,12 @@ const topUpStep = ref(''); // '', 'transferring', 'converting'
 const topUpLimits = ref<{ maxCkusdcE6s: bigint; cooldownSeconds: bigint } | null>(null);
 
 // === Wallet tab state ===
-const walletBalances = ref<{ cycles: bigint; icpE8s: bigint; ckusdcE6s: bigint; ckusdtE6s: bigint } | null>(null);
+const walletBalances = ref<{
+  cycles: bigint;
+  icpE8s: bigint;
+  ckusdcE6s: bigint;
+  ckusdtE6s: bigint;
+} | null>(null);
 const ckusdcTxHistory = ref<any[]>([]);
 const ckusdtTxHistory = ref<any[]>([]);
 const walletLoading = ref(true);
@@ -70,13 +75,17 @@ const ethPrincipalHex = computed(() => {
   if (!engramCanisterId.value) return null;
   try {
     return principalToBytes32Hex(engramCanisterId.value);
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 });
 const ethHexCopied = ref(false);
 const ethContractCopied = ref(false);
 const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const USDT_CONTRACT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
-const ethTokenContract = computed(() => ethDepositToken.value === 'USDC' ? USDC_CONTRACT : USDT_CONTRACT);
+const ethTokenContract = computed(() =>
+  ethDepositToken.value === 'USDC' ? USDC_CONTRACT : USDT_CONTRACT,
+);
 
 // Tx history pagination
 const txPage = ref(0);
@@ -84,21 +93,29 @@ const TX_PAGE_SIZE = 20;
 
 // === Data loading ===
 
-watch(engramActor, (actor) => {
-  if (actor) {
-    loadEngramData();
-    loadWalletBalances();
-    loadTopUpLimits();
-  }
-}, { immediate: true });
+watch(
+  engramActor,
+  (actor) => {
+    if (actor) {
+      loadEngramData();
+      loadWalletBalances();
+      loadTopUpLimits();
+    }
+  },
+  { immediate: true },
+);
 
-watch(registryActor, (actor) => {
-  if (actor) {
-    loadAccountingData();
-    loadDepositAddress();
-    loadPlatformFee();
-  }
-}, { immediate: true });
+watch(
+  registryActor,
+  (actor) => {
+    if (actor) {
+      loadAccountingData();
+      loadDepositAddress();
+      loadPlatformFee();
+    }
+  },
+  { immediate: true },
+);
 
 async function loadEngramData() {
   cyclesLoading.value = true;
@@ -154,9 +171,16 @@ async function loadWalletBalances() {
     try {
       const result = await engramActor.value.walletBalance();
       if ('Ok' in result) {
-        walletBalances.value = { cycles: result.Ok, icpE8s: BigInt(0), ckusdcE6s: BigInt(0), ckusdtE6s: BigInt(0) };
+        walletBalances.value = {
+          cycles: result.Ok,
+          icpE8s: BigInt(0),
+          ckusdcE6s: BigInt(0),
+          ckusdtE6s: BigInt(0),
+        };
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   } finally {
     walletLoading.value = false;
   }
@@ -242,12 +266,16 @@ async function loadEthDepositInfo() {
 }
 
 // Load tx history and ETH deposit info when wallet tab is active
-watch(activeTab, (tab) => {
-  if (tab === 'wallet' && engramActor.value) {
-    loadTxHistory();
-    loadEthDepositInfo();
-  }
-}, { immediate: true });
+watch(
+  activeTab,
+  (tab) => {
+    if (tab === 'wallet' && engramActor.value) {
+      loadTxHistory();
+      loadEthDepositInfo();
+    }
+  },
+  { immediate: true },
+);
 
 // === Computed properties ===
 
@@ -262,7 +290,9 @@ const paginatedTxHistory = computed(() => {
   return combinedTxHistory.value.slice(start, start + TX_PAGE_SIZE);
 });
 
-const txTotalPages = computed(() => Math.max(1, Math.ceil(combinedTxHistory.value.length / TX_PAGE_SIZE)));
+const txTotalPages = computed(() =>
+  Math.max(1, Math.ceil(combinedTxHistory.value.length / TX_PAGE_SIZE)),
+);
 
 // === Withdraw handler ===
 
@@ -298,7 +328,10 @@ async function handleWithdraw() {
 
 function onTopUpAmountInput(e: Event) {
   const raw = (e.target as HTMLInputElement).value;
-  if (raw === '') { topUpAmount.value = ''; return; }
+  if (raw === '') {
+    topUpAmount.value = '';
+    return;
+  }
   const val = parseFloat(raw);
   if (topUpMaxCkusdc.value !== null && val > topUpMaxCkusdc.value) {
     topUpAmount.value = topUpMaxCkusdc.value.toFixed(2);
@@ -317,7 +350,7 @@ async function handleTopUp() {
   try {
     const parsedAmount = parseFloat(topUpAmount.value);
 
-    if (isNaN(parsedAmount) || parsedAmount < 0.10) {
+    if (isNaN(parsedAmount) || parsedAmount < 0.1) {
       cyclesError.value = `Minimum top-up is 0.10 ${topUpCurrency.value}`;
       return;
     }
@@ -365,17 +398,16 @@ function formatCycles(n: bigint | number): string {
   return val.toLocaleString();
 }
 
-function formatCkusdc(e6s: bigint | number): string {
-  return (Number(e6s) / 1_000_000).toFixed(2);
-}
-
 function formatStablecoin(e6s: bigint | number): string {
   return (Number(e6s) / 1_000_000).toFixed(2);
 }
 
 function formatDateTime(nanos: bigint | number): string {
   return new Date(Number(nanos) / 1_000_000).toLocaleDateString(undefined, {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
@@ -416,7 +448,9 @@ function txCounterparty(tx: any, engramPrincipal: string): string {
   const t = tx.transaction;
   if (t.transfer?.[0]) {
     const to = t.transfer[0].to?.owner?.toText?.() || t.transfer[0].to?.owner?.toString?.();
-    return to === engramPrincipal ? formatPrincipal(t.transfer[0].from?.owner) : formatPrincipal(t.transfer[0].to?.owner);
+    return to === engramPrincipal
+      ? formatPrincipal(t.transfer[0].from?.owner)
+      : formatPrincipal(t.transfer[0].to?.owner);
   }
   if (t.mint?.[0]) return 'Mint';
   if (t.burn?.[0]) return 'Burn';
@@ -432,42 +466,41 @@ const chartPoints = computed(() => {
     y: Number(bal),
   }));
 
-  const minX = data[0].x;
-  const maxX = data[data.length - 1].x;
+  const minX = data[0]!.x;
+  const maxX = data[data.length - 1]!.x;
   const rangeX = maxX - minX || 1;
 
-  const minY = Math.min(...data.map(d => d.y));
-  const maxY = Math.max(...data.map(d => d.y));
+  const minY = Math.min(...data.map((d) => d.y));
+  const maxY = Math.max(...data.map((d) => d.y));
   const rangeY = maxY - minY || 1;
 
   const W = 600;
   const H = 160;
   const pad = 4;
 
-  return data.map(d => {
-    const x = pad + ((d.x - minX) / rangeX) * (W - 2 * pad);
-    const y = (H - pad) - ((d.y - minY) / rangeY) * (H - 2 * pad);
-    return `${x},${y}`;
-  }).join(' ');
+  return data
+    .map((d) => {
+      const x = pad + ((d.x - minX) / rangeX) * (W - 2 * pad);
+      const y = H - pad - ((d.y - minY) / rangeY) * (H - 2 * pad);
+      return `${x},${y}`;
+    })
+    .join(' ');
 });
 
 const chartLabels = computed(() => {
   if (cycleHistory.value.length < 2) return [];
   const data = cycleHistory.value;
-  const first = data[0];
-  const last = data[data.length - 1];
-  return [
-    formatDateTime(first[0]),
-    formatDateTime(last[0]),
-  ];
+  const first = data[0]!;
+  const last = data[data.length - 1]!;
+  return [formatDateTime(first[0]), formatDateTime(last[0])];
 });
 
 const burnRate = computed(() => {
   if (cycleHistory.value.length < 2) return null;
   const data = cycleHistory.value;
-  const first = data[0];
-  const last = data[data.length - 1];
-  const timeDiffHours = (Number(last[0]) - Number(first[0])) / (3_600_000_000_000);
+  const first = data[0]!;
+  const last = data[data.length - 1]!;
+  const timeDiffHours = (Number(last[0]) - Number(first[0])) / 3_600_000_000_000;
   if (timeDiffHours <= 0) return null;
   const cycleDiff = Number(first[1]) - Number(last[1]);
   if (cycleDiff <= 0) return null; // gaining cycles, no burn
@@ -485,7 +518,7 @@ const topUpButtonText = computed(() => {
 });
 
 const feePercent = computed(() =>
-  platformFeeBps.value !== null ? (platformFeeBps.value / 100).toFixed(0) + '%' : null
+  platformFeeBps.value !== null ? (platformFeeBps.value / 100).toFixed(0) + '%' : null,
 );
 
 const topUpBreakdown = computed(() => {
@@ -495,7 +528,7 @@ const topUpBreakdown = computed(() => {
   const amountUnits = amt * 1_000_000;
   const net = amountUnits - 2 * fee;
   if (net <= 0) return null;
-  const platformFee = net * platformFeeBps.value / 10_000;
+  const platformFee = (net * platformFeeBps.value) / 10_000;
   const operational = net - platformFee;
   const estimatedCycles = operational * 751_900; // 1 USD ≈ 751.9B cycles
   return { estimatedCycles };
@@ -503,7 +536,10 @@ const topUpBreakdown = computed(() => {
 
 const walletAvailableForTopUp = computed(() => {
   if (!walletBalances.value) return '0';
-  const bal = topUpCurrency.value === 'ckUSDT' ? walletBalances.value.ckusdtE6s : walletBalances.value.ckusdcE6s;
+  const bal =
+    topUpCurrency.value === 'ckUSDT'
+      ? walletBalances.value.ckusdtE6s
+      : walletBalances.value.ckusdcE6s;
   return formatStablecoin(bal);
 });
 
@@ -533,29 +569,37 @@ const walletTotalUsd = computed(() => {
 const engramPrincipalText = computed(() => engramCanisterId.value || '');
 
 // Generate QR code when engram principal is known
-watch(engramPrincipalText, async (principal) => {
-  if (!principal) {
-    depositQrDataUrl.value = null;
-    return;
-  }
-  try {
-    depositQrDataUrl.value = await QRCode.toDataURL(principal, {
-      width: 200,
-      margin: 2,
-      color: { dark: '#ffffffdd', light: '#00000000' },
-    });
-  } catch {
-    depositQrDataUrl.value = null;
-  }
-}, { immediate: true });
+watch(
+  engramPrincipalText,
+  async (principal) => {
+    if (!principal) {
+      depositQrDataUrl.value = null;
+      return;
+    }
+    try {
+      depositQrDataUrl.value = await QRCode.toDataURL(principal, {
+        width: 200,
+        margin: 2,
+        color: { dark: '#ffffffdd', light: '#00000000' },
+      });
+    } catch {
+      depositQrDataUrl.value = null;
+    }
+  },
+  { immediate: true },
+);
 
 async function copyAddress() {
   if (!engramPrincipalText.value) return;
   try {
     await navigator.clipboard.writeText(engramPrincipalText.value);
     addressCopied.value = true;
-    setTimeout(() => { addressCopied.value = false; }, 2000);
-  } catch { /* clipboard may fail in some contexts */ }
+    setTimeout(() => {
+      addressCopied.value = false;
+    }, 2000);
+  } catch {
+    /* clipboard may fail in some contexts */
+  }
 }
 
 async function copyEthHex() {
@@ -563,8 +607,12 @@ async function copyEthHex() {
   try {
     await navigator.clipboard.writeText(ethPrincipalHex.value);
     ethHexCopied.value = true;
-    setTimeout(() => { ethHexCopied.value = false; }, 2000);
-  } catch { /* ignore */ }
+    setTimeout(() => {
+      ethHexCopied.value = false;
+    }, 2000);
+  } catch {
+    /* ignore */
+  }
 }
 
 async function copyEthContract() {
@@ -572,8 +620,12 @@ async function copyEthContract() {
   try {
     await navigator.clipboard.writeText(ethHelperContract.value);
     ethContractCopied.value = true;
-    setTimeout(() => { ethContractCopied.value = false; }, 2000);
-  } catch { /* ignore */ }
+    setTimeout(() => {
+      ethContractCopied.value = false;
+    }, 2000);
+  } catch {
+    /* ignore */
+  }
 }
 </script>
 
@@ -616,7 +668,9 @@ async function copyEthContract() {
       <!-- Balance Card -->
       <div class="card mb-6">
         <div class="flex items-center gap-4">
-          <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-yellow-500/10 text-yellow-400">
+          <div
+            class="flex items-center justify-center w-12 h-12 rounded-lg bg-yellow-500/10 text-yellow-400"
+          >
             <EngramIcon name="zap" :size="24" />
           </div>
           <div>
@@ -632,7 +686,10 @@ async function copyEthContract() {
         <div v-if="burnRate" class="mt-3 text-sm text-gray-400">
           Burn rate: ~{{ formatCycles(burnRate.perDay) }}/day
           <span class="text-gray-500 ml-2">|</span>
-          <span class="ml-2" :class="burnRate.daysRemaining < 7 ? 'text-red-400' : 'text-green-400'">
+          <span
+            class="ml-2"
+            :class="burnRate.daysRemaining < 7 ? 'text-red-400' : 'text-green-400'"
+          >
             ~{{ burnRate.daysRemaining }} days remaining
           </span>
         </div>
@@ -662,8 +719,18 @@ async function copyEthContract() {
       </div>
 
       <!-- Messages -->
-      <div v-if="cyclesError" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">{{ cyclesError }}</div>
-      <div v-if="cyclesSuccess" class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4 text-green-400">{{ cyclesSuccess }}</div>
+      <div
+        v-if="cyclesError"
+        class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400"
+      >
+        {{ cyclesError }}
+      </div>
+      <div
+        v-if="cyclesSuccess"
+        class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4 text-green-400"
+      >
+        {{ cyclesSuccess }}
+      </div>
 
       <!-- Top-Up Form -->
       <div class="card mb-6">
@@ -672,7 +739,7 @@ async function copyEthContract() {
         <!-- Token Selector -->
         <div class="flex gap-2 mb-4">
           <button
-            v-for="t in (['ckUSDC', 'ckUSDT'] as const)"
+            v-for="t in ['ckUSDC', 'ckUSDT'] as const"
             :key="t"
             :class="[
               'px-3 py-1.5 text-sm rounded-lg font-medium transition-colors',
@@ -688,9 +755,18 @@ async function copyEthContract() {
 
         <p class="text-sm text-gray-400 mb-4">
           Transfer {{ topUpCurrency }} from your engram wallet to receive cycles.
-          <span v-if="feePercent">Platform fee: <span class="text-white font-medium">{{ feePercent }}</span>.</span>
-          <span v-if="topUpMaxDisplay"> Max per top-up: <span class="text-white font-medium">{{ topUpMaxDisplay }}</span>.</span>
-          <span v-if="topUpCooldownDisplay"> Cooldown: <span class="text-white font-medium">{{ topUpCooldownDisplay }}</span>.</span>
+          <span v-if="feePercent"
+            >Platform fee: <span class="text-white font-medium">{{ feePercent }}</span
+            >.</span
+          >
+          <span v-if="topUpMaxDisplay">
+            Max per top-up: <span class="text-white font-medium">{{ topUpMaxDisplay }}</span
+            >.</span
+          >
+          <span v-if="topUpCooldownDisplay">
+            Cooldown: <span class="text-white font-medium">{{ topUpCooldownDisplay }}</span
+            >.</span
+          >
         </p>
 
         <!-- Available Balance -->
@@ -719,7 +795,9 @@ async function copyEthContract() {
           <div v-if="topUpBreakdown" class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono">
             <div class="flex justify-between text-gray-400">
               <span>Top up:</span>
-              <span class="text-white">~{{ formatCycles(topUpBreakdown.estimatedCycles) }} cycles</span>
+              <span class="text-white"
+                >~{{ formatCycles(topUpBreakdown.estimatedCycles) }} cycles</span
+              >
             </div>
           </div>
 
@@ -728,14 +806,18 @@ async function copyEthContract() {
           </button>
         </div>
         <p class="text-xs text-gray-500 mt-3">
-          {{ topUpCurrency }} is converted to cycles at the current USD exchange rate. A depeg safety check is performed via the XRC canister.
+          {{ topUpCurrency }} is converted to cycles at the current USD exchange rate. A depeg
+          safety check is performed via the XRC canister.
         </p>
       </div>
 
       <!-- Accounting History -->
       <div class="card">
         <h2 class="text-lg font-semibold text-white mb-4">Top-Up History</h2>
-        <div v-if="!accounting || accounting.topUpHistory.length === 0" class="text-gray-500 text-sm py-4 text-center">
+        <div
+          v-if="!accounting || accounting.topUpHistory.length === 0"
+          class="text-gray-500 text-sm py-4 text-center"
+        >
           No top-ups yet.
         </div>
         <div v-else class="space-y-1">
@@ -748,7 +830,9 @@ async function copyEthContract() {
               <span class="text-sm text-white">{{ formatCycles(event.cyclesAmount) }} cycles</span>
               <span class="text-xs text-gray-500 ml-2">
                 <template v-if="event.token === 'creation'">Starter Gift</template>
-                <template v-else-if="event.token === 'cycles'">{{ formatCycles(event.amountPaid) }} cycles paid</template>
+                <template v-else-if="event.token === 'cycles'"
+                  >{{ formatCycles(event.amountPaid) }} cycles paid</template
+                >
                 <template v-else>{{ formatEventAmount(event) }} paid</template>
               </span>
             </div>
@@ -763,7 +847,9 @@ async function copyEthContract() {
       <!-- Balance Card -->
       <div class="card mb-6">
         <div class="flex items-center gap-4 mb-4">
-          <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-engram-500/10 text-engram-400">
+          <div
+            class="flex items-center justify-center w-12 h-12 rounded-lg bg-engram-500/10 text-engram-400"
+          >
             <EngramIcon name="wallet" :size="24" />
           </div>
           <div class="flex-1">
@@ -772,12 +858,16 @@ async function copyEthContract() {
               <LoadingSpinner size="sm" />
             </div>
             <div v-else>
-              <p class="text-2xl md:text-4xl font-bold text-white mt-1">
-                ${{ walletTotalUsd }}
-              </p>
+              <p class="text-2xl md:text-4xl font-bold text-white mt-1">${{ walletTotalUsd }}</p>
               <div class="flex items-center gap-4 mt-2 text-sm text-gray-400">
-                <span>{{ formatStablecoin(walletBalances?.ckusdcE6s ?? 0n) }} <span class="text-gray-500">ckUSDC</span></span>
-                <span>{{ formatStablecoin(walletBalances?.ckusdtE6s ?? 0n) }} <span class="text-gray-500">ckUSDT</span></span>
+                <span
+                  >{{ formatStablecoin(walletBalances?.ckusdcE6s ?? 0n) }}
+                  <span class="text-gray-500">ckUSDC</span></span
+                >
+                <span
+                  >{{ formatStablecoin(walletBalances?.ckusdtE6s ?? 0n) }}
+                  <span class="text-gray-500">ckUSDT</span></span
+                >
               </div>
             </div>
           </div>
@@ -785,14 +875,25 @@ async function copyEthContract() {
       </div>
 
       <!-- Messages -->
-      <div v-if="walletError" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">{{ walletError }}</div>
-      <div v-if="walletSuccess" class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4 text-green-400">{{ walletSuccess }}</div>
+      <div
+        v-if="walletError"
+        class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400"
+      >
+        {{ walletError }}
+      </div>
+      <div
+        v-if="walletSuccess"
+        class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4 text-green-400"
+      >
+        {{ walletSuccess }}
+      </div>
 
       <!-- Deposit Address -->
       <div class="card mb-6">
         <h2 class="text-lg font-semibold text-white mb-4">Deposit</h2>
         <p class="text-sm text-gray-400 mb-4">
-          Send ckUSDC or ckUSDT to the address below. Both tokens are deposited to the same engram address.
+          Send ckUSDC or ckUSDT to the address below. Both tokens are deposited to the same engram
+          address.
         </p>
 
         <div v-if="engramPrincipalText" class="bg-gray-800/50 rounded-lg p-4">
@@ -802,10 +903,16 @@ async function copyEthContract() {
             </div>
             <div class="flex-1 min-w-0">
               <span class="text-xs text-gray-500 block mb-1">Engram Deposit Address</span>
-              <p class="text-sm text-white font-mono break-all leading-relaxed">{{ engramPrincipalText }}</p>
+              <p class="text-sm text-white font-mono break-all leading-relaxed">
+                {{ engramPrincipalText }}
+              </p>
               <button
                 class="mt-2 text-xs px-3 py-1.5 rounded-lg transition-colors"
-                :class="addressCopied ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-300 hover:text-white'"
+                :class="
+                  addressCopied
+                    ? 'bg-green-500/20 text-green-400'
+                    : 'bg-gray-700 text-gray-300 hover:text-white'
+                "
                 @click="copyAddress"
               >
                 {{ addressCopied ? 'Copied!' : 'Copy Address' }}
@@ -823,7 +930,7 @@ async function copyEthContract() {
         <!-- Ethereum token selector -->
         <div class="flex gap-2 mb-4">
           <button
-            v-for="t in (['USDC', 'USDT'] as const)"
+            v-for="t in ['USDC', 'USDT'] as const"
             :key="t"
             :class="[
               'px-3 py-1.5 text-sm rounded-lg font-medium transition-colors',
@@ -838,7 +945,9 @@ async function copyEthContract() {
         </div>
 
         <p class="text-sm text-gray-400 mb-4">
-          Send {{ ethDepositToken }} (ERC-20) from any Ethereum wallet on <span class="text-white font-medium">Ethereum Mainnet only</span>. It will be minted as ck{{ ethDepositToken }} in your engram (~20 min). Do not send from other networks.
+          Send {{ ethDepositToken }} (ERC-20) from any Ethereum wallet on
+          <span class="text-white font-medium">Ethereum Mainnet only</span>. It will be minted as
+          ck{{ ethDepositToken }} in your engram (~20 min). Do not send from other networks.
         </p>
 
         <div v-if="ethHelperLoading" class="py-4">
@@ -847,16 +956,29 @@ async function copyEthContract() {
         <div v-else-if="ethHelperContract && ethPrincipalHex">
           <ol class="text-sm text-gray-300 space-y-3 mb-4 list-decimal list-inside">
             <li>
-              <span class="text-gray-400">Approve</span> the helper contract to spend your {{ ethDepositToken }} on the
-              <a :href="`https://etherscan.io/token/${ethTokenContract}#writeProxyContract`" target="_blank" rel="noopener" class="text-engram-400 hover:underline">{{ ethDepositToken }} contract</a>.
-              <br /><span class="text-xs text-gray-500">Spender: the helper contract address below.</span>
+              <span class="text-gray-400">Approve</span> the helper contract to spend your
+              {{ ethDepositToken }} on the
+              <a
+                :href="`https://etherscan.io/token/${ethTokenContract}#writeProxyContract`"
+                target="_blank"
+                rel="noopener"
+                class="text-engram-400 hover:underline"
+                >{{ ethDepositToken }} contract</a
+              >. <br /><span class="text-xs text-gray-500"
+                >Spender: the helper contract address below.</span
+              >
             </li>
             <li>
               Call <code class="text-engram-400">deposit</code> on the helper contract with:
-              <br /><span class="text-xs text-gray-500"><code>_token</code>: {{ ethDepositToken }} contract &middot; <code>_amount</code>: amount in 6-decimal units &middot; <code>_principal</code>: your engram bytes32 below.</span>
+              <br /><span class="text-xs text-gray-500"
+                ><code>_token</code>: {{ ethDepositToken }} contract &middot; <code>_amount</code>:
+                amount in 6-decimal units &middot; <code>_principal</code>: your engram bytes32
+                below.</span
+              >
             </li>
             <li>
-              Wait ~20 minutes for Ethereum finality. ck{{ ethDepositToken }} will appear in your wallet balance.
+              Wait ~20 minutes for Ethereum finality. ck{{ ethDepositToken }} will appear in your
+              wallet balance.
             </li>
           </ol>
 
@@ -868,13 +990,22 @@ async function copyEthContract() {
                 <p class="text-sm text-white font-mono break-all flex-1">{{ ethHelperContract }}</p>
                 <button
                   class="flex-shrink-0 text-xs px-2 py-1 rounded transition-colors"
-                  :class="ethContractCopied ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-300 hover:text-white'"
+                  :class="
+                    ethContractCopied
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'bg-gray-700 text-gray-300 hover:text-white'
+                  "
                   @click="copyEthContract"
                 >
                   {{ ethContractCopied ? 'Copied!' : 'Copy' }}
                 </button>
               </div>
-              <a :href="`https://etherscan.io/address/${ethHelperContract}#writeContract`" target="_blank" rel="noopener" class="text-xs text-engram-400 hover:underline mt-1 inline-block">
+              <a
+                :href="`https://etherscan.io/address/${ethHelperContract}#writeContract`"
+                target="_blank"
+                rel="noopener"
+                class="text-xs text-engram-400 hover:underline mt-1 inline-block"
+              >
                 View on Etherscan
               </a>
             </div>
@@ -886,7 +1017,11 @@ async function copyEthContract() {
                 <p class="text-sm text-white font-mono break-all flex-1">{{ ethPrincipalHex }}</p>
                 <button
                   class="flex-shrink-0 text-xs px-2 py-1 rounded transition-colors"
-                  :class="ethHexCopied ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-300 hover:text-white'"
+                  :class="
+                    ethHexCopied
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'bg-gray-700 text-gray-300 hover:text-white'
+                  "
                   @click="copyEthHex"
                 >
                   {{ ethHexCopied ? 'Copied!' : 'Copy' }}
@@ -896,13 +1031,16 @@ async function copyEthContract() {
 
             <!-- Token Contract Reference -->
             <div class="bg-gray-800/50 rounded-lg p-3">
-              <span class="text-xs text-gray-500 block mb-1">{{ ethDepositToken }} Contract (ERC-20)</span>
+              <span class="text-xs text-gray-500 block mb-1"
+                >{{ ethDepositToken }} Contract (ERC-20)</span
+              >
               <p class="text-sm text-white font-mono break-all">{{ ethTokenContract }}</p>
             </div>
           </div>
 
           <p class="text-xs text-gray-500 mt-3">
-            Ethereum gas fees apply. The ckETH minter processes deposits after ~30 Ethereum block confirmations.
+            Ethereum gas fees apply. The ckETH minter processes deposits after ~30 Ethereum block
+            confirmations.
           </p>
         </div>
         <div v-else class="text-gray-500 text-sm">
@@ -917,7 +1055,7 @@ async function copyEthContract() {
         <!-- Token Selector -->
         <div class="flex gap-2 mb-4">
           <button
-            v-for="t in (['ckUSDC', 'ckUSDT'] as const)"
+            v-for="t in ['ckUSDC', 'ckUSDT'] as const"
             :key="t"
             :class="[
               'px-3 py-1.5 text-sm rounded-lg font-medium transition-colors',
@@ -969,17 +1107,23 @@ async function copyEthContract() {
                 <span
                   :class="[
                     'text-xs font-medium px-2 py-0.5 rounded',
-                    txDirection(tx, engramPrincipalText) === 'in' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400',
+                    txDirection(tx, engramPrincipalText) === 'in'
+                      ? 'bg-green-500/10 text-green-400'
+                      : 'bg-red-500/10 text-red-400',
                   ]"
                 >
                   {{ txDirection(tx, engramPrincipalText) === 'in' ? 'IN' : 'OUT' }}
                 </span>
                 <div>
                   <span class="text-sm text-white">{{ formatTxAmount(tx) }}</span>
-                  <span class="text-xs text-gray-500 ml-2">{{ txCounterparty(tx, engramPrincipalText) }}</span>
+                  <span class="text-xs text-gray-500 ml-2">{{
+                    txCounterparty(tx, engramPrincipalText)
+                  }}</span>
                 </div>
               </div>
-              <span class="text-xs text-gray-500">{{ formatDateTime(tx.transaction.timestamp) }}</span>
+              <span class="text-xs text-gray-500">{{
+                formatDateTime(tx.transaction.timestamp)
+              }}</span>
             </div>
           </div>
           <!-- Pagination -->
@@ -1007,9 +1151,9 @@ async function copyEthContract() {
       <div class="card mt-6">
         <h2 class="text-lg font-semibold text-white mb-2">Spending Limits</h2>
         <p class="text-gray-400 text-sm">
-          Operator spending limits and address allowlists can be configured per operator
-          from the Operators page. Operators can only transfer to pre-approved addresses
-          within their daily limit.
+          Operator spending limits and address allowlists can be configured per operator from the
+          Operators page. Operators can only transfer to pre-approved addresses within their daily
+          limit.
         </p>
       </div>
     </div>

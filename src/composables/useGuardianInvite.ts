@@ -58,22 +58,27 @@ export function useGuardianInvite(engramActor: Ref<any>, engramCanisterId: Ref<s
       if (!engramActor.value || accepted.value) return;
       try {
         const guardians = await engramActor.value.listGuardians();
-        const newPending = guardians.find((g: any) =>
-          'Pending' in g.status && !knownGuardianPrincipals.has(g.principal.toText())
+        const newPending = guardians.find(
+          (g: any) => 'Pending' in g.status && !knownGuardianPrincipals.has(g.principal.toText()),
         );
         if (newPending) {
           accepted.value = true;
           stopPolling();
         }
-      } catch { /* ignore polling errors */ }
+      } catch {
+        /* ignore polling errors */
+      }
     }, 5000);
   }
 
-  async function createInvite(name: string, permissions: {
-    canRevokeOperators: boolean;
-    canFreezePayments: boolean;
-    canPauseWrites: boolean;
-  }) {
+  async function createInvite(
+    name: string,
+    permissions: {
+      canRevokeOperators: boolean;
+      canFreezePayments: boolean;
+      canPauseWrites: boolean;
+    },
+  ) {
     if (!engramActor.value) return;
     creating.value = true;
     inviteError.value = null;

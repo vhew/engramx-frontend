@@ -19,11 +19,7 @@ const emit = defineEmits<{
     <span class="text-sm text-gray-400 font-mono">
       {{ principal ? `${principal.slice(0, 8)}...${principal.slice(-4)}` : '' }}
     </span>
-    <button class="btn-secondary text-sm" @click="emit('logout')">
-      Sign Out
-    </button>
+    <button class="btn-secondary text-sm" @click="emit('logout')">Sign Out</button>
   </div>
-  <button v-else class="btn-primary" @click="emit('login')">
-    Sign in with Internet Identity
-  </button>
+  <button v-else class="btn-primary" @click="emit('login')">Sign in with Internet Identity</button>
 </template>

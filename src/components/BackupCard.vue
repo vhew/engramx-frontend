@@ -31,8 +31,10 @@ const backupTypeLabel = computed(() => {
 });
 
 const backupTypeBadge = computed(() => {
-  if ('FullSnapshot' in props.backup.backupType) return 'bg-blue-900/60 text-blue-300 border-blue-700/50';
-  if ('PartialSnapshot' in props.backup.backupType) return 'bg-purple-900/60 text-purple-300 border-purple-700/50';
+  if ('FullSnapshot' in props.backup.backupType)
+    return 'bg-blue-900/60 text-blue-300 border-blue-700/50';
+  if ('PartialSnapshot' in props.backup.backupType)
+    return 'bg-purple-900/60 text-purple-300 border-purple-700/50';
   return 'bg-amber-900/60 text-amber-300 border-amber-700/50';
 });
 
@@ -43,8 +45,10 @@ const statusLabel = computed(() => {
 });
 
 const statusColor = computed(() => {
-  if ('Finalized' in props.backup.status) return 'bg-green-900/60 text-green-300 border-green-700/50';
-  if ('Uploading' in props.backup.status) return 'bg-yellow-900/60 text-yellow-300 border-yellow-700/50';
+  if ('Finalized' in props.backup.status)
+    return 'bg-green-900/60 text-green-300 border-green-700/50';
+  if ('Uploading' in props.backup.status)
+    return 'bg-yellow-900/60 text-yellow-300 border-yellow-700/50';
   return 'bg-red-900/60 text-red-300 border-red-700/50';
 });
 
@@ -68,7 +72,8 @@ const truncatedSha = computed(() => {
 
 const labelText = computed(() => {
   if (!props.backup.backupLabel) return null;
-  if (Array.isArray(props.backup.backupLabel) && props.backup.backupLabel.length > 0) return props.backup.backupLabel[0];
+  if (Array.isArray(props.backup.backupLabel) && props.backup.backupLabel.length > 0)
+    return props.backup.backupLabel[0];
   return null;
 });
 </script>
@@ -77,23 +82,31 @@ const labelText = computed(() => {
   <div class="card">
     <div class="flex items-start justify-between">
       <div class="flex items-start gap-4">
-        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 shrink-0 mt-0.5">
+        <div
+          class="flex items-center justify-center w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 shrink-0 mt-0.5"
+        >
           <EngramIcon name="file" :size="20" />
         </div>
         <div>
           <div class="flex items-center gap-2">
             <h3 class="text-white font-semibold font-mono text-sm">{{ backup.backupId }}</h3>
-            <span :class="['text-xs font-medium px-2 py-0.5 rounded-sm border', statusColor]">{{ statusLabel }}</span>
+            <span :class="['text-xs font-medium px-2 py-0.5 rounded-sm border', statusColor]">{{
+              statusLabel
+            }}</span>
           </div>
           <p class="text-gray-400 text-sm mt-1">
             {{ backup.dbType }}
             <span v-if="labelText" class="text-gray-500"> &mdash; {{ labelText }}</span>
           </p>
           <div class="flex flex-wrap gap-2 mt-2">
-            <span :class="['text-xs font-medium px-2 py-0.5 rounded-sm border', backupTypeBadge]">{{ backupTypeLabel }}</span>
+            <span :class="['text-xs font-medium px-2 py-0.5 rounded-sm border', backupTypeBadge]">{{
+              backupTypeLabel
+            }}</span>
             <span class="text-xs text-gray-500">{{ formattedSize }}</span>
             <span class="text-xs text-gray-500">{{ Number(backup.chunkCount) }} chunks</span>
-            <span class="text-xs text-gray-500 font-mono" :title="backup.sha256">{{ truncatedSha }}</span>
+            <span class="text-xs text-gray-500 font-mono" :title="backup.sha256">{{
+              truncatedSha
+            }}</span>
           </div>
           <p class="text-gray-600 text-xs mt-2">{{ formattedDate }}</p>
         </div>

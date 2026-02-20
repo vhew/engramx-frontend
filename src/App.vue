@@ -4,7 +4,17 @@ import { useAuth } from './composables/useAuth';
 import { useRegistry } from './composables/useRegistry';
 import { useEngram } from './composables/useEngram';
 import { useGuardianSession } from './composables/useGuardianSession';
-import { createAgent, createEngramActor, createLedgerActor, createCkusdcLedgerActor, createCkusdtLedgerActor, createIcpIndexActor, createCkusdcIndexActor, createCkusdtIndexActor, createMinterActor } from './lib/actor';
+import {
+  createAgent,
+  createEngramActor,
+  createLedgerActor,
+  createCkusdcLedgerActor,
+  createCkusdtLedgerActor,
+  createIcpIndexActor,
+  createCkusdcIndexActor,
+  createCkusdtIndexActor,
+  createMinterActor,
+} from './lib/actor';
 import Navbar from './components/Navbar.vue';
 import AppFooter from './components/AppFooter.vue';
 
@@ -21,7 +31,9 @@ const guardianSession = useGuardianSession();
 const guardianCanisterId = ref<string | null>(null);
 const guardianActor = ref<any>(null);
 const guardianRecord = ref<any>(null);
-const isGuardianOnly = computed(() => !!guardianRecord.value && !registry.engram.value && !registry.loading.value);
+const isGuardianOnly = computed(
+  () => !!guardianRecord.value && !registry.engram.value && !registry.loading.value,
+);
 const isAlsoGuardian = computed(() => !!guardianRecord.value && !!registry.engram.value);
 
 async function refreshGuardianStatus() {
@@ -37,7 +49,7 @@ async function refreshGuardianStatus() {
     try {
       const agent = createAgent(id);
       const actor = createEngramActor(agent, entry.canisterId);
-      const result = await actor.checkGuardianStatus() as Record<string, any>;
+      const result = (await actor.checkGuardianStatus!()) as Record<string, any>;
       if ('Ok' in result) {
         guardianCanisterId.value = entry.canisterId;
         guardianActor.value = actor;
@@ -135,7 +147,14 @@ provide('refreshGuardianStatus', refreshGuardianStatus);
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col" style="background:#0a0e14; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)">
+  <div
+    class="min-h-screen flex flex-col"
+    style="
+      background: #0a0e14;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+        env(safe-area-inset-left);
+    "
+  >
     <Navbar
       :is-authenticated="auth.isAuthenticated.value"
       :is-loading="auth.isLoading.value"

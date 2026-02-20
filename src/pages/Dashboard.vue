@@ -10,11 +10,18 @@ const status = ref<any>(null);
 const creating = ref(false);
 const error = ref<string | null>(null);
 
-watch(engramActor, (actor) => {
-  if (actor) {
-    actor.status().then((s: any) => (status.value = s[0] || s)).catch((e: any) => console.warn('Failed to load status:', e));
-  }
-}, { immediate: true });
+watch(
+  engramActor,
+  (actor) => {
+    if (actor) {
+      actor
+        .status()
+        .then((s: any) => (status.value = s[0] || s))
+        .catch((e: any) => console.warn('Failed to load status:', e));
+    }
+  },
+  { immediate: true },
+);
 
 async function handleCreate() {
   creating.value = true;
@@ -29,14 +36,39 @@ async function handleCreate() {
 }
 
 const statCards = [
-  { key: 'memoryFileCount', label: 'Memory Files', icon: 'file', color: 'bg-blue-500/10 text-blue-400' },
+  {
+    key: 'memoryFileCount',
+    label: 'Memory Files',
+    icon: 'file',
+    color: 'bg-blue-500/10 text-blue-400',
+  },
   { key: 'sessionCount', label: 'Sessions', icon: 'chat', color: 'bg-green-500/10 text-green-400' },
-  { key: 'operatorCount', label: 'Operators', icon: 'users', color: 'bg-purple-500/10 text-purple-400' },
+  {
+    key: 'operatorCount',
+    label: 'Operators',
+    icon: 'users',
+    color: 'bg-purple-500/10 text-purple-400',
+  },
   { key: 'guardianCount', label: 'Guardians', icon: 'shield', color: 'bg-red-500/10 text-red-400' },
   { key: 'backupCount', label: 'Backups', icon: 'file', color: 'bg-cyan-500/10 text-cyan-400' },
-  { key: 'auditLogSize', label: 'Audit Entries', icon: 'check-circle', color: 'bg-amber-500/10 text-amber-400' },
-  { key: 'totalMemoryWrites', label: 'Memory Writes', icon: 'file', color: 'bg-orange-500/10 text-orange-400' },
-  { key: 'totalSessionAppends', label: 'Session Messages', icon: 'chat', color: 'bg-teal-500/10 text-teal-400' },
+  {
+    key: 'auditLogSize',
+    label: 'Audit Entries',
+    icon: 'check-circle',
+    color: 'bg-amber-500/10 text-amber-400',
+  },
+  {
+    key: 'totalMemoryWrites',
+    label: 'Memory Writes',
+    icon: 'file',
+    color: 'bg-orange-500/10 text-orange-400',
+  },
+  {
+    key: 'totalSessionAppends',
+    label: 'Session Messages',
+    icon: 'chat',
+    color: 'bg-teal-500/10 text-teal-400',
+  },
 ];
 
 const quickLinks = [
@@ -53,9 +85,7 @@ const quickLinks = [
       <EngramIcon name="shield" :size="64" class="mx-auto" />
     </div>
     <h1 class="text-3xl font-bold text-white mb-4">Welcome to EngramX</h1>
-    <p class="text-gray-400 mb-8">
-      You don't have an engram yet. Create one to get started.
-    </p>
+    <p class="text-gray-400 mb-8">You don't have an engram yet. Create one to get started.</p>
     <p v-if="error" class="text-red-400 mb-4">{{ error }}</p>
     <button class="btn-primary text-lg px-8 py-3" :disabled="creating" @click="handleCreate">
       {{ creating ? 'Creating...' : 'Create Engram' }}
@@ -83,11 +113,17 @@ const quickLinks = [
     </div>
 
     <!-- Status Banners -->
-    <div v-if="status && status.paymentsFrozen" class="mb-4 rounded-lg bg-red-900/20 border border-red-800 px-4 py-3 flex items-center gap-3">
+    <div
+      v-if="status && status.paymentsFrozen"
+      class="mb-4 rounded-lg bg-red-900/20 border border-red-800 px-4 py-3 flex items-center gap-3"
+    >
       <EngramIcon name="x-circle" :size="20" class="text-red-400 shrink-0" />
       <span class="text-red-300 text-sm">Payments are frozen by a guardian.</span>
     </div>
-    <div v-if="status && status.writesPaused" class="mb-4 rounded-lg bg-yellow-900/20 border border-yellow-800 px-4 py-3 flex items-center gap-3">
+    <div
+      v-if="status && status.writesPaused"
+      class="mb-4 rounded-lg bg-yellow-900/20 border border-yellow-800 px-4 py-3 flex items-center gap-3"
+    >
       <EngramIcon name="x-circle" :size="20" class="text-yellow-400 shrink-0" />
       <span class="text-yellow-300 text-sm">Writes are paused by a guardian.</span>
     </div>

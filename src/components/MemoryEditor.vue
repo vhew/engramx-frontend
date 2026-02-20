@@ -43,11 +43,19 @@ function startEditing() {
         </div>
       </div>
       <div class="flex gap-2">
-        <button v-if="!editing" class="btn-secondary text-sm inline-flex items-center gap-1.5" @click="startEditing">
+        <button
+          v-if="!editing"
+          class="btn-secondary text-sm inline-flex items-center gap-1.5"
+          @click="startEditing"
+        >
           <EngramIcon name="edit" :size="14" />
           Edit
         </button>
-        <button v-if="onDelete" class="btn-danger text-sm inline-flex items-center gap-1.5" @click="onDelete">
+        <button
+          v-if="onDelete"
+          class="btn-danger text-sm inline-flex items-center gap-1.5"
+          @click="onDelete"
+        >
           <EngramIcon name="trash" :size="14" />
           Delete
         </button>
@@ -61,16 +69,21 @@ function startEditing() {
         :rows="15"
       />
       <div class="flex gap-2 mt-3">
-        <button class="btn-primary text-sm inline-flex items-center gap-1.5" :disabled="saving" @click="handleSave">
+        <button
+          class="btn-primary text-sm inline-flex items-center gap-1.5"
+          :disabled="saving"
+          @click="handleSave"
+        >
           <EngramIcon name="save" :size="14" />
           {{ saving ? 'Saving...' : 'Save' }}
         </button>
-        <button class="btn-secondary text-sm" @click="editing = false">
-          Cancel
-        </button>
+        <button class="btn-secondary text-sm" @click="editing = false">Cancel</button>
       </div>
     </div>
-    <div v-else class="bg-gray-800 rounded-lg p-4 font-mono text-sm text-gray-300 whitespace-pre-wrap max-h-[500px] overflow-y-auto">
+    <div
+      v-else
+      class="bg-gray-800 rounded-lg p-4 font-mono text-sm text-gray-300 whitespace-pre-wrap max-h-[500px] overflow-y-auto"
+    >
       <template v-if="content">{{ content }}</template>
       <span v-else class="text-gray-600 italic">Empty file</span>
     </div>

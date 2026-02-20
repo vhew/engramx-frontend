@@ -43,7 +43,10 @@ const emit = defineEmits<{
       </div>
     </div>
     <div v-if="status === 'Active'" class="mt-4 flex flex-col gap-2 sm:flex-row">
-      <button class="btn-secondary text-sm inline-flex items-center gap-1.5" @click="emit('editPermissions')">
+      <button
+        class="btn-secondary text-sm inline-flex items-center gap-1.5"
+        @click="emit('editPermissions')"
+      >
         <EngramIcon name="edit" :size="14" />
         Edit Permissions
       </button>

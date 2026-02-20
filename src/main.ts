@@ -13,7 +13,10 @@ router.beforeEach(async (to) => {
     if (isLoading.value) {
       await new Promise<void>((resolve) => {
         const check = () => {
-          if (!isLoading.value) { resolve(); return; }
+          if (!isLoading.value) {
+            resolve();
+            return;
+          }
           setTimeout(check, 50);
         };
         check();
@@ -29,16 +32,20 @@ app.mount('#root');
 // Register PWA service worker — skip on local replica (*.localhost:4943)
 const isLocal = location.hostname.endsWith('.localhost') || location.hostname === 'localhost';
 if (!isLocal) {
-  import('virtual:pwa-register').then(({ registerSW }) => {
-    registerSW({
-      onRegisteredSW(_swUrl, registration) {
-        if (registration) {
-          setInterval(() => { registration.update(); }, 60_000);
-        }
-      },
-      onOfflineReady() {
-        console.log('[SW] App ready for offline use.');
-      },
-    });
-  }).catch(() => {});
+  import('virtual:pwa-register')
+    .then(({ registerSW }) => {
+      registerSW({
+        onRegisteredSW(_swUrl, registration) {
+          if (registration) {
+            setInterval(() => {
+              registration.update();
+            }, 60_000);
+          }
+        },
+        onOfflineReady() {
+          console.log('[SW] App ready for offline use.');
+        },
+      });
+    })
+    .catch(() => {});
 }

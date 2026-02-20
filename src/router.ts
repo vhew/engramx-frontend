@@ -3,13 +3,25 @@ import Landing from './pages/Landing.vue';
 
 const routes = [
   { path: '/', component: Landing },
-  { path: '/dashboard', component: () => import('./pages/Dashboard.vue'), meta: { requiresAuth: true } },
+  {
+    path: '/dashboard',
+    component: () => import('./pages/Dashboard.vue'),
+    meta: { requiresAuth: true },
+  },
   { path: '/memory', component: () => import('./pages/Memory.vue'), meta: { requiresAuth: true } },
   { path: '/access', component: () => import('./pages/Access.vue'), meta: { requiresAuth: true } },
-  { path: '/billing', component: () => import('./pages/Billing.vue'), meta: { requiresAuth: true } },
+  {
+    path: '/billing',
+    component: () => import('./pages/Billing.vue'),
+    meta: { requiresAuth: true },
+  },
   { path: '/system', component: () => import('./pages/System.vue'), meta: { requiresAuth: true } },
   { path: '/guardian-invite', component: () => import('./pages/GuardianInvite.vue') },
-  { path: '/guardian', component: () => import('./pages/Guardian.vue'), meta: { requiresAuth: true } },
+  {
+    path: '/guardian',
+    component: () => import('./pages/Guardian.vue'),
+    meta: { requiresAuth: true },
+  },
   { path: '/verify', component: () => import('./pages/Verify.vue') },
   { path: '/docs', component: () => import('./pages/Docs.vue') },
   { path: '/licensing', component: () => import('./pages/Licensing.vue') },

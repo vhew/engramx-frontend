@@ -36,7 +36,9 @@ const permissionLabels = [
   <div class="card">
     <div class="flex items-start justify-between">
       <div class="flex items-start gap-4">
-        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-red-500/10 text-red-400 shrink-0 mt-0.5">
+        <div
+          class="flex items-center justify-center w-10 h-10 rounded-lg bg-red-500/10 text-red-400 shrink-0 mt-0.5"
+        >
           <EngramIcon name="shield" :size="20" />
         </div>
         <div>

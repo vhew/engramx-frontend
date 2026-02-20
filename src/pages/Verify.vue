@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { HttpAgent } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import CodeBlock from '../components/CodeBlock.vue';
 import { createEngramActor, REGISTRY_CANISTER_ID } from '../lib/actor';
 
 const engramId = ref('');
-const provenanceStatus = ref<'idle' | 'loading' | 'canonical' | 'unknown' | 'none' | 'error'>('idle');
+const provenanceStatus = ref<'idle' | 'loading' | 'canonical' | 'unknown' | 'none' | 'error'>(
+  'idle',
+);
 const spawnedByPrincipal = ref('');
 const errorMessage = ref('');
 
@@ -24,7 +26,7 @@ async function checkProvenance() {
     const agent = await HttpAgent.create({ host, shouldFetchRootKey: isLocal });
 
     const actor = createEngramActor(agent, id);
-    const result = await actor.getSpawnedBy() as [] | [Principal];
+    const result = (await actor.getSpawnedBy!()) as [] | [Principal];
 
     if (result.length === 0 || !result[0]) {
       provenanceStatus.value = 'none';
@@ -44,8 +46,8 @@ async function checkProvenance() {
   <div class="max-w-3xl mx-auto px-4 py-16">
     <h1 class="text-3xl font-bold text-white mb-4">Verify Deployed Code</h1>
     <p class="text-gray-400 mb-8">
-      EngramX is open source. You can verify that the deployed canister code matches
-      the public repository by building from source and comparing WASM hashes.
+      EngramX is open source. You can verify that the deployed canister code matches the public
+      repository by building from source and comparing WASM hashes.
     </p>
 
     <!-- Provenance Check -->
@@ -73,22 +75,38 @@ async function checkProvenance() {
       </div>
 
       <!-- Provenance Result -->
-      <div v-if="provenanceStatus === 'canonical'" class="flex items-center gap-2 p-3 bg-green-900/30 border border-green-700/50 rounded-sm">
+      <div
+        v-if="provenanceStatus === 'canonical'"
+        class="flex items-center gap-2 p-3 bg-green-900/30 border border-green-700/50 rounded-sm"
+      >
         <span class="inline-block w-2 h-2 rounded-full bg-green-400"></span>
-        <span class="text-green-400 text-sm font-medium">Spawned by canonical EngramX registry</span>
+        <span class="text-green-400 text-sm font-medium"
+          >Spawned by canonical EngramX registry</span
+        >
       </div>
-      <div v-else-if="provenanceStatus === 'unknown'" class="p-3 bg-amber-900/30 border border-amber-700/50 rounded-sm">
+      <div
+        v-else-if="provenanceStatus === 'unknown'"
+        class="p-3 bg-amber-900/30 border border-amber-700/50 rounded-sm"
+      >
         <div class="flex items-center gap-2">
           <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
           <span class="text-amber-400 text-sm font-medium">Spawned by unknown registry</span>
         </div>
         <p class="text-amber-400/70 text-xs font-mono mt-1">{{ spawnedByPrincipal }}</p>
       </div>
-      <div v-else-if="provenanceStatus === 'none'" class="flex items-center gap-2 p-3 bg-gray-800 border border-gray-700 rounded-sm">
+      <div
+        v-else-if="provenanceStatus === 'none'"
+        class="flex items-center gap-2 p-3 bg-gray-800 border border-gray-700 rounded-sm"
+      >
         <span class="inline-block w-2 h-2 rounded-full bg-gray-500"></span>
-        <span class="text-gray-400 text-sm">No provenance data (pre-provenance engram or deployed standalone)</span>
+        <span class="text-gray-400 text-sm"
+          >No provenance data (pre-provenance engram or deployed standalone)</span
+        >
       </div>
-      <div v-else-if="provenanceStatus === 'error'" class="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-sm">
+      <div
+        v-else-if="provenanceStatus === 'error'"
+        class="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-sm"
+      >
         <span class="inline-block w-2 h-2 rounded-full bg-red-400"></span>
         <span class="text-red-400 text-sm">{{ errorMessage }}</span>
       </div>
@@ -98,10 +116,10 @@ async function checkProvenance() {
     <div class="card mb-8">
       <h2 class="text-lg font-semibold text-white mb-2">Why Verification Matters</h2>
       <p class="text-gray-400 text-sm">
-        ICP canisters run compiled WebAssembly (WASM) code. When you interact with a canister,
-        you trust that it's running the code you expect. The IC stores a SHA-256 hash of the
-        installed WASM module, which anyone can query. By building the same source code yourself
-        and comparing hashes, you can prove the deployed canister matches the open source repo.
+        ICP canisters run compiled WebAssembly (WASM) code. When you interact with a canister, you
+        trust that it's running the code you expect. The IC stores a SHA-256 hash of the installed
+        WASM module, which anyone can query. By building the same source code yourself and comparing
+        hashes, you can prove the deployed canister matches the open source repo.
       </p>
     </div>
 
@@ -134,27 +152,29 @@ async function checkProvenance() {
 
       <div>
         <h3 class="text-lg font-semibold text-white mb-2">1. Clone the Repository</h3>
-        <CodeBlock :code="`git clone https://github.com/vhew/engramx.git\ncd engramx\ngit checkout <commit-hash>`" />
+        <CodeBlock
+          :code="`git clone https://github.com/vhew/engramx.git\ncd engramx\ngit checkout <commit-hash>`"
+        />
       </div>
 
       <div>
         <h3 class="text-lg font-semibold text-white mb-2">2. Build with Docker</h3>
-        <CodeBlock :code="`docker build -t engramx-verify .\ndocker run --rm engramx-verify sha256sum registry.wasm\ndocker run --rm engramx-verify sha256sum engram.wasm`" />
+        <CodeBlock
+          :code="`docker build -t engramx-verify .\ndocker run --rm engramx-verify sha256sum registry.wasm\ndocker run --rm engramx-verify sha256sum engram.wasm`"
+        />
       </div>
 
       <div>
         <h3 class="text-lg font-semibold text-white mb-2">3. Get the Deployed Hash</h3>
         <CodeBlock code="icp canister status <registry-canister-id> -e ic" />
-        <p class="text-gray-400 text-sm mt-2">
-          Look for the "Module hash" field in the output.
-        </p>
+        <p class="text-gray-400 text-sm mt-2">Look for the "Module hash" field in the output.</p>
       </div>
 
       <div>
         <h3 class="text-lg font-semibold text-white mb-2">4. Compare</h3>
         <p class="text-gray-400 text-sm">
-          If the SHA-256 hashes match, the deployed code is exactly what's in the repository.
-          If they don't match, something is wrong — do not trust the deployment.
+          If the SHA-256 hashes match, the deployed code is exactly what's in the repository. If
+          they don't match, something is wrong — do not trust the deployment.
         </p>
       </div>
 

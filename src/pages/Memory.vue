@@ -41,13 +41,17 @@ const backupsLoading = ref(true);
 const backupsError = ref<string | null>(null);
 const dbTypeFilter = ref('');
 
-watch(engramActor, (actor) => {
-  if (actor) {
-    loadFiles();
-    loadSessions();
-    loadBackups();
-  }
-}, { immediate: true });
+watch(
+  engramActor,
+  (actor) => {
+    if (actor) {
+      loadFiles();
+      loadSessions();
+      loadBackups();
+    }
+  },
+  { immediate: true },
+);
 
 // === Files logic ===
 async function loadFiles() {
@@ -97,7 +101,8 @@ async function handleDelete() {
 }
 
 async function handleRollback(version: number) {
-  if (!selectedFile.value || !confirm(`Rollback ${selectedFile.value.path} to v${version}?`)) return;
+  if (!selectedFile.value || !confirm(`Rollback ${selectedFile.value.path} to v${version}?`))
+    return;
   const result = await engramActor.value.rollbackMemory(selectedFile.value.path, BigInt(version));
   if ('Err' in result) {
     filesError.value = result.Err;
@@ -254,7 +259,12 @@ function getRoleString(role: any): string {
 
     <!-- Files Tab -->
     <div v-if="activeTab === 'files'">
-      <div v-if="filesError" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">{{ filesError }}</div>
+      <div
+        v-if="filesError"
+        class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400"
+      >
+        {{ filesError }}
+      </div>
 
       <!-- Mobile file selector -->
       <div class="md:hidden mb-4">
@@ -315,7 +325,11 @@ function getRoleString(role: any): string {
           <div v-if="selectedFile && history.length > 0" class="card mt-4">
             <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">History</h2>
             <div class="space-y-2">
-              <div v-for="v in history" :key="Number(v.version)" class="flex justify-between items-center text-sm">
+              <div
+                v-for="v in history"
+                :key="Number(v.version)"
+                class="flex justify-between items-center text-sm"
+              >
                 <span class="text-gray-300">v{{ Number(v.version) }}</span>
                 <button
                   class="text-engram-400 hover:text-engram-300 text-xs py-1 px-2"
@@ -415,11 +429,13 @@ function getRoleString(role: any): string {
           <div v-if="selectedSession" class="card">
             <SessionViewer
               :session-key="selectedSession"
-              :messages="messages.map((m: any) => ({
-                role: getRoleString(m.role),
-                content: m.content,
-                timestamp: formatTimestamp(m.timestamp),
-              }))"
+              :messages="
+                messages.map((m: any) => ({
+                  role: getRoleString(m.role),
+                  content: m.content,
+                  timestamp: formatTimestamp(m.timestamp),
+                }))
+              "
             />
           </div>
           <div v-else class="card">
@@ -435,7 +451,12 @@ function getRoleString(role: any): string {
 
     <!-- Backups Tab -->
     <div v-if="activeTab === 'backups'" class="max-w-3xl mx-auto">
-      <div v-if="backupsError" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">{{ backupsError }}</div>
+      <div
+        v-if="backupsError"
+        class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400"
+      >
+        {{ backupsError }}
+      </div>
 
       <!-- Filter -->
       <div class="mb-4">

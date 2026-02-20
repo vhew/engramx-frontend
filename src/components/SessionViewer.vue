@@ -12,21 +12,31 @@ defineProps<{
 
 function getRoleColor(role: string): string {
   switch (role) {
-    case 'User': return 'bg-blue-900/30 border-blue-800';
-    case 'Assistant': return 'bg-green-900/30 border-green-800';
-    case 'System': return 'bg-yellow-900/30 border-yellow-800';
-    case 'Tool': return 'bg-purple-900/30 border-purple-800';
-    default: return 'bg-gray-800 border-gray-700';
+    case 'User':
+      return 'bg-blue-900/30 border-blue-800';
+    case 'Assistant':
+      return 'bg-green-900/30 border-green-800';
+    case 'System':
+      return 'bg-yellow-900/30 border-yellow-800';
+    case 'Tool':
+      return 'bg-purple-900/30 border-purple-800';
+    default:
+      return 'bg-gray-800 border-gray-700';
   }
 }
 
 function getRoleBadge(role: string): string {
   switch (role) {
-    case 'User': return 'text-blue-400';
-    case 'Assistant': return 'text-green-400';
-    case 'System': return 'text-yellow-400';
-    case 'Tool': return 'text-purple-400';
-    default: return 'text-gray-400';
+    case 'User':
+      return 'text-blue-400';
+    case 'Assistant':
+      return 'text-green-400';
+    case 'System':
+      return 'text-yellow-400';
+    case 'Tool':
+      return 'text-purple-400';
+    default:
+      return 'text-gray-400';
   }
 }
 </script>

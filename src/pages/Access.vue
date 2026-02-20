@@ -15,7 +15,10 @@ const route = useRoute();
 const router = useRouter();
 const engramActor = inject<Ref<any>>('engramActor')!;
 const engram = inject<Ref<any>>('engram')!;
-const engramCanisterId = computed(() => engram.value?.canisterId?.toText?.() || engram.value?.canisterId?.toString() || '<canister-id>');
+const engramCanisterId = computed(
+  () =>
+    engram.value?.canisterId?.toText?.() || engram.value?.canisterId?.toString() || '<canister-id>',
+);
 
 const activeTab = computed({
   get: () => (route.query.tab === 'guardians' ? 'guardians' : 'operators'),
@@ -28,7 +31,9 @@ const error = ref<string | null>(null);
 const operators = ref<any[]>([]);
 const operatorsLoading = ref(true);
 const invite = useOperatorInvite(engramActor, engramCanisterId);
-const pairCommand = computed(() => `npx @engramx/client pair ${invite.inviteCode.value} --engram ${engramCanisterId.value}`);
+const pairCommand = computed(
+  () => `npx @engramx/client pair ${invite.inviteCode.value} --engram ${engramCanisterId.value}`,
+);
 
 // === Guardians state ===
 const guardians = ref<any[]>([]);
@@ -47,18 +52,25 @@ const paymentsFrozen = ref(false);
 const writesPaused = ref(false);
 const operatorSummaries = ref<{ principal: any; name: string; status: any }[]>([]);
 
-watch(engramActor, (actor) => {
-  if (actor) {
-    loadOperators();
-    loadGuardians();
-    loadStatus();
-  }
-}, { immediate: true });
+watch(
+  engramActor,
+  (actor) => {
+    if (actor) {
+      loadOperators();
+      loadGuardians();
+      loadStatus();
+    }
+  },
+  { immediate: true },
+);
 
 // Auto-refresh guardian list when a guardian accepts the invite
-watch(() => guardianInvite.accepted.value, (isAccepted) => {
-  if (isAccepted) loadGuardians();
-});
+watch(
+  () => guardianInvite.accepted.value,
+  (isAccepted) => {
+    if (isAccepted) loadGuardians();
+  },
+);
 
 // === Operators logic ===
 async function loadOperators() {
@@ -125,7 +137,11 @@ async function handleCreateGuardianInvite() {
   } else {
     showInviteForm.value = false;
     newGuardianName.value = '';
-    newPermissions.value = { canRevokeOperators: true, canFreezePayments: true, canPauseWrites: true };
+    newPermissions.value = {
+      canRevokeOperators: true,
+      canFreezePayments: true,
+      canPauseWrites: true,
+    };
   }
 }
 
@@ -163,7 +179,9 @@ async function loadStatus() {
     const s = await engramActor.value.status();
     paymentsFrozen.value = s.paymentsFrozen;
     writesPaused.value = s.writesPaused;
-  } catch {}
+  } catch {
+    // ignore — status may fail if engram not yet created
+  }
   await loadOperatorSummaries();
 }
 
@@ -228,12 +246,18 @@ async function handleEmergencyRefresh() {
       </button>
     </div>
 
-    <div v-if="error" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">{{ error }}</div>
+    <div v-if="error" class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4 text-red-400">
+      {{ error }}
+    </div>
 
     <!-- Operators Tab -->
     <div v-if="activeTab === 'operators'">
       <div v-if="operators.length > 0" class="flex justify-end mb-6">
-        <button class="btn-primary inline-flex items-center gap-2" :disabled="invite.creating.value" @click="handleCreateInvite">
+        <button
+          class="btn-primary inline-flex items-center gap-2"
+          :disabled="invite.creating.value"
+          @click="handleCreateInvite"
+        >
           <EngramIcon name="plus" :size="16" />
           {{ invite.creating.value ? 'Creating...' : 'Create Invite' }}
         </button>
@@ -271,14 +295,21 @@ async function handleEmergencyRefresh() {
           :last-seen="formatTimestamp(op.lastSeen)"
           :registered-at="formatTimestamp(op.registeredAt)"
           @revoke="revokeOperator(op.principal)"
-          @edit-permissions="() => {/* TODO: permissions editor modal */}"
+          @edit-permissions="
+            () => {
+              /* TODO: permissions editor modal */
+            }
+          "
         />
       </div>
     </div>
 
     <!-- Guardians Tab -->
     <div v-if="activeTab === 'guardians'">
-      <div v-if="guardians.length > 0 || guardianInvite.inviteCode.value" class="flex justify-end mb-6">
+      <div
+        v-if="guardians.length > 0 || guardianInvite.inviteCode.value"
+        class="flex justify-end mb-6"
+      >
         <button
           class="btn-primary inline-flex items-center gap-2"
           :disabled="guardianInvite.creating.value"
@@ -301,15 +332,27 @@ async function handleEmergencyRefresh() {
           />
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <label class="flex items-center gap-2 text-sm text-gray-300 py-1">
-              <input type="checkbox" v-model="newPermissions.canRevokeOperators" class="rounded-sm w-5 h-5" />
+              <input
+                type="checkbox"
+                v-model="newPermissions.canRevokeOperators"
+                class="rounded-sm w-5 h-5"
+              />
               Revoke Operators
             </label>
             <label class="flex items-center gap-2 text-sm text-gray-300 py-1">
-              <input type="checkbox" v-model="newPermissions.canFreezePayments" class="rounded-sm w-5 h-5" />
+              <input
+                type="checkbox"
+                v-model="newPermissions.canFreezePayments"
+                class="rounded-sm w-5 h-5"
+              />
               Freeze Payments
             </label>
             <label class="flex items-center gap-2 text-sm text-gray-300 py-1">
-              <input type="checkbox" v-model="newPermissions.canPauseWrites" class="rounded-sm w-5 h-5" />
+              <input
+                type="checkbox"
+                v-model="newPermissions.canPauseWrites"
+                class="rounded-sm w-5 h-5"
+              />
               Pause Writes
             </label>
           </div>
@@ -321,26 +364,47 @@ async function handleEmergencyRefresh() {
             >
               {{ guardianInvite.creating.value ? 'Creating...' : 'Create Invite' }}
             </button>
-            <button class="btn-secondary flex-1 sm:flex-none" @click="showInviteForm = false">Cancel</button>
+            <button class="btn-secondary flex-1 sm:flex-none" @click="showInviteForm = false">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Guardian Invite Link Display -->
-      <div v-if="guardianInvite.inviteCode.value" class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6">
+      <div
+        v-if="guardianInvite.inviteCode.value"
+        class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6"
+      >
         <div class="flex items-center justify-between mb-2">
-          <span class="text-lg font-semibold" :class="guardianInvite.accepted.value ? 'text-green-400' : 'text-engram-400'">
+          <span
+            class="text-lg font-semibold"
+            :class="guardianInvite.accepted.value ? 'text-green-400' : 'text-engram-400'"
+          >
             {{ guardianInvite.accepted.value ? 'Guardian Accepted' : 'Guardian Invite Ready' }}
           </span>
-          <span :class="['text-sm font-mono', guardianInvite.inviteSecondsLeft.value <= 300 ? 'text-red-400' : 'text-gray-400']">
+          <span
+            :class="[
+              'text-sm font-mono',
+              guardianInvite.inviteSecondsLeft.value <= 300 ? 'text-red-400' : 'text-gray-400',
+            ]"
+          >
             Expires in {{ guardianInvite.countdownText.value }}
           </span>
         </div>
 
         <!-- Accepted state -->
-        <div v-if="guardianInvite.accepted.value" class="flex items-center gap-2 text-green-400 text-sm mb-2">
+        <div
+          v-if="guardianInvite.accepted.value"
+          class="flex items-center gap-2 text-green-400 text-sm mb-2"
+        >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
           </svg>
           <span>A guardian has accepted this invite. Approve them below to activate.</span>
         </div>
@@ -348,9 +412,13 @@ async function handleEmergencyRefresh() {
         <!-- Waiting state -->
         <div v-else>
           <p class="text-gray-400 text-sm mb-2">Send this link to the guardian:</p>
-          <code class="text-gray-300 text-sm block bg-gray-900 rounded-sm px-3 py-2 break-all">{{ guardianInvite.inviteLink.value }}</code>
+          <code class="text-gray-300 text-sm block bg-gray-900 rounded-sm px-3 py-2 break-all">{{
+            guardianInvite.inviteLink.value
+          }}</code>
           <div class="flex items-center gap-3 mt-3">
-            <button class="btn-secondary text-sm" @click="guardianInvite.copyInviteLink">Copy Link</button>
+            <button class="btn-secondary text-sm" @click="guardianInvite.copyInviteLink">
+              Copy Link
+            </button>
             <span class="text-gray-500 text-xs flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse"></span>
               Waiting for guardian to accept...
@@ -378,7 +446,6 @@ async function handleEmergencyRefresh() {
           @approve="approveGuardian(g.principal)"
         />
       </div>
-
     </div>
   </div>
 </template>

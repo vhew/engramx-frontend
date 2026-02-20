@@ -41,13 +41,19 @@ const navLinks = computed(() => {
   return [];
 });
 
-watch(() => route.path, () => {
-  mobileMenuOpen.value = false;
-});
+watch(
+  () => route.path,
+  () => {
+    mobileMenuOpen.value = false;
+  },
+);
 </script>
 
 <template>
-  <nav class="border-b border-gray-800 backdrop-blur-xs sticky top-0 z-50" style="background:rgba(10,14,20,0.9)">
+  <nav
+    class="border-b border-gray-800 backdrop-blur-xs sticky top-0 z-50"
+    style="background: rgba(10, 14, 20, 0.9)"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         <div class="flex items-center gap-3 md:gap-8">

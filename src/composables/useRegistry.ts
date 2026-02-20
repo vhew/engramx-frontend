@@ -8,14 +8,18 @@ export function useRegistry(identity: Ref<Identity | null>) {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  watch(identity, (id) => {
-    if (id) {
-      const agent = createAgent(id);
-      actor.value = createRegistryActor(agent);
-    } else {
-      actor.value = null;
-    }
-  }, { immediate: true });
+  watch(
+    identity,
+    (id) => {
+      if (id) {
+        const agent = createAgent(id);
+        actor.value = createRegistryActor(agent);
+      } else {
+        actor.value = null;
+      }
+    },
+    { immediate: true },
+  );
 
   async function fetchMyEngram() {
     if (!actor.value) return;
@@ -48,14 +52,18 @@ export function useRegistry(identity: Ref<Identity | null>) {
     }
   }
 
-  watch(actor, (a) => {
-    if (a) {
-      fetchMyEngram();
-    } else {
-      engram.value = null;
-      error.value = null;
-    }
-  }, { immediate: true });
+  watch(
+    actor,
+    (a) => {
+      if (a) {
+        fetchMyEngram();
+      } else {
+        engram.value = null;
+        error.value = null;
+      }
+    },
+    { immediate: true },
+  );
 
   return { actor, engram, loading, error, createEngram, fetchMyEngram };
 }
